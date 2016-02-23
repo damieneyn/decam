@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
 	{
 		cam.GrabFrame();
 		imshow("Image", img);
+		//imwrite("D:\\test.jpg", img);
 
 	} while (waitKey(1) != 'q');
 

@@ -24,8 +24,13 @@
 #include <stdio.h>
 #include <iostream>
 
+//OpenCv
 #include <cv.h>
 #include <highgui.h>
+
+//OpenCv2
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #ifndef CLASS_UEYE
 #define CLASS_UEYE
@@ -48,6 +53,7 @@
 #endif
 
 using namespace cv;
+using namespace std;
 
 enum colorType{
 	MONO = IS_CM_MONO8,
@@ -71,8 +77,11 @@ DLL_EXPORT inline  size getSize(int x, int y)
 }
 
 DLL_EXPORT inline CvSize getCvSize(size sI){ return cvSize(sI.width, sI.height); }
-
-using namespace std;
+inline string getPath(string begin, int val, string ext){
+	char digit[20];			sprintf(digit, "%06d", val);
+	string path = begin;	path += digit;					path += ext;
+	return path;
+}
 
 class DLL_EXPORT CuEye{
 
@@ -173,6 +182,7 @@ public:
 	void GrabFrame();
 	void saveCvImage(const char* begin = "Img_", int = 0, const char* ext = ".bmp");
 	static void saveCvImage(const char* begin, int var, const char *ext, IplImage *inputImage);
+	static void saveCvImage(const char* begin, int var, const char *ext, Mat &inputImage);
 
 	//Live
 	int getCvLastRingBuffer();

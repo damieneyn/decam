@@ -77,26 +77,21 @@ CVuEye::~CVuEye()
 
 void CVuEye::saveCvImage(const char* begin, int var, const char *ext)
 {
-	char digit[255];
-	sprintf(digit,"%06d",var);
-	std::string path;
-	path = begin;
-	path += digit;
-	path += ext;
+	imwrite(getPath(begin,var,ext), this->getMat());
 
-	cvSaveImage(path.c_str(),&iBuffer);
+	// deprecated
+	//cvSaveImage(path.c_str(),&iBuffer);
 }
 
+// deprecated
 void CVuEye::saveCvImage(const char* begin, int var, const char *ext, IplImage *inputImage)
 {
-	char digit[255];
-	sprintf(digit,"%06d",var);
-	std::string path;
-	path = begin;
-	path += digit;
-	path += ext;
+	cvSaveImage(getPath(begin,var,ext).c_str(),inputImage);
+}
 
-	cvSaveImage(path.c_str(),inputImage);
+void CVuEye::saveCvImage(const char* begin, int var, const char *ext, Mat &inputImage)
+{
+	imwrite(getPath(begin,var,ext), inputImage);
 }
 
 int CVuEye::getCvLastRingBuffer()
