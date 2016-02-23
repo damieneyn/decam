@@ -50,6 +50,12 @@ if(MSVC)
 	endforeach(flag_var)
 endif()
 
+#if(MSVC)
+#	target_link_libraries(decam )
+#else()
+#	target_link_libraries(decam )
+#endif()
+
 
 add_library(
 	decam
@@ -57,17 +63,25 @@ add_library(
 	${decam_source_files}
 )
 
+#set (OPENCV_LIBS opencv_core310 opencv_imgcodecs310 opencv_flann310 opencv_highgui310 opencv_imgproc310 opencv_features2d310 opencv_ml310 opencv_objdetect310)
 
-if(DE_OS MATCHES "LINUX")
-	set (UEYE_LIBS ueye_api)
-else()
-	if(DE_ARCH MATCHES "X64")
+if(DE_ARCH MATCHES "X64")
+	if(DE_OS MATCHES "LINUX")
+		set (UEYE_LIBS /usr/lib/ueye_api64)
+	else()
 		set (UEYE_LIBS uEye_api_64 uEye_tools_64)
+	endif()
+else()
+	if(DE_OS MATCHES "LINUX")
+		set (UEYE_LIBS /usr/lib/ueye_api)
 	else()
 		set (UEYE_LIBS uEye_api uEye_tools)
 	endif()
 endif()
 
-target_link_libraries(decam ${OpenCV_LIBRARIES} ${UEYE_LIBS})
+#set (UEYE2OPENCV_LIB cvueyedll)
 
+#if(DE_CAMERA)
+	target_link_libraries(decam ${OpenCV_LIBRARIES} ${UEYE_LIBS})
+#endif()
 
