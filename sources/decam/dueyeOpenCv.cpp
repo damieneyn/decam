@@ -4,7 +4,6 @@ void CVuEye::InitOpenCVuEye()
 {
 
 	int rColor;
-	int cvChannel;
 
 	(ColorMode == MONO) ? rColor = 1 : rColor = 4;
 	switch(ColorMode)

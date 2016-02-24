@@ -76,7 +76,7 @@ DLL_EXPORT inline  size getSize(int x, int y)
     return p;
 }
 
-DLL_EXPORT inline CvSize getCvSize(size sI){ return cvSize(sI.width, sI.height); }
+
 inline string getPath(string begin, int val, string ext){
 	char digit[20];			sprintf(digit, "%06d", val);
 	string path = begin;	path += digit;					path += ext;
@@ -124,7 +124,6 @@ protected:
 	void CloseCam();
 
 public:
-	//void InitCam(bool color=0,bool live=0);
 	CuEye(bool AutoGain=DEF_GAIN,
 		  bool AutoShutter=DEF_SHUTTER,
 		  int nBuffer=DEF_NBUFFER,
@@ -136,15 +135,21 @@ public:
 	void GrabFrame();
 	void StopLive();
 	void StartLive();
-	int getLastRingBuffer(char *);
+	int  getLastRingBuffer(char *);
 	void SaveCurrentBufferedImage(char*);
 	void SaveImage(char*);
 
 #if defined(WIN32)
-	void startAVISave(std::string path,double fps);
+	virtual void startAVISave(std::string path,double fps);
 	void pushFrame(char *);
-	void stopAVISave();
+	virtual void stopAVISave();
 #endif
+
+	//Accesseurs
+	int getSizeX(){ return m_nSizeX; }
+	int getSizeY(){ return m_nSizeY; }
+	int getColorMode(){ return m_nColorMode; }
+	int getBitsPerPixel(){ return m_nBitsPerPixel; }
 };
 
 class DLL_EXPORT CVuEye :public CuEye
@@ -154,25 +159,24 @@ private:
 	IplImage *iBuffer = nullptr;//cvCreateImage(cvSize(1, 1), IPL_DEPTH_8U, 1);
 	Mat *iMat = nullptr;
 	void InitOpenCVuEye();
+	int cvChannel;
 
 public:
 
 	CVuEye(size sI = DEF_SIZE,
-				colorType ColorMode=DEF_COLOR,
-				bool AutoGain=DEF_GAIN,
-				bool AutoShutter=DEF_SHUTTER,
-				int nBuffer=DEF_NBUFFER):
-				CuEye(AutoGain, AutoShutter, nBuffer, ColorMode, sI)
-				{InitOpenCVuEye(); };
+		   colorType ColorMode = DEF_COLOR,
+		   bool AutoGain = DEF_GAIN,
+		   bool AutoShutter = DEF_SHUTTER,
+		   int nBuffer = DEF_NBUFFER) :
+		   CuEye(AutoGain, AutoShutter, nBuffer, ColorMode, sI)
+		   { InitOpenCVuEye(); };
 
-/*	CVuEye(colorType ColorMode=DEF_COLOR):
-				CuEye(DEF_GAIN, DEF_SHUTTER, DEF_NBUFFER, ColorMode, DEF_SIZE)
-				{InitOpenCVuEye();};
+	CVuEye(bool color, size sI = DEF_SIZE) :
+		CuEye(DEF_GAIN, DEF_SHUTTER, DEF_NBUFFER, color?BGR32:MONO, sI)
+	{
+		InitOpenCVuEye();
+	};
 
-	CVuEye(size sI=DEF_SIZE,colorType ColorMode=DEF_COLOR):
-				CuEye(DEF_GAIN, DEF_SHUTTER, DEF_NBUFFER, ColorMode, sI)
-				{InitOpenCVuEye();};
-*/
 	~CVuEye();
 
 	IplImage* getCvImage(){return iBuffer;};
@@ -190,9 +194,17 @@ public:
 	//Avi
 #if defined(WIN32)
 	void pushFrame();
+#else
+	//void startAVISave(std::string path,double fps);
+	//void stopAVISave();
 #endif
-	bool isColor(){return (ColorMode==colorType::RGB32)?true:false;};
 
+	bool isColor(){ return (ColorMode == colorType::RGB32) ? true : false; };
+
+	//Accesseurs
+	Size getCvSize(){ return Size(getSizeX(), getSizeY()); };
+	static CvSize getCvSize(size sI){ return cvSize(sI.width, sI.height); };
+	bool getIsColor(){ return (cvChannel > 1)?true:false; }
 };
 
 #endif

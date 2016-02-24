@@ -12,8 +12,9 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	CVuEye cam;
+	CVuEye cam(true);
 
+	
 	/******************************/
 	/* Sample single shot grabber */
 	/******************************/
@@ -35,7 +36,7 @@ int main(int argc, char* argv[])
 
 	/* OPENCV2 SAMPLE */
 
-	Mat img = cam.getMat();
+	/*Mat img = cam.getMat();
 	do
 	{
 		cam.GrabFrame();
@@ -43,6 +44,7 @@ int main(int argc, char* argv[])
 		//imwrite("D:\\test.jpg", img);
 
 	} while (waitKey(1) != 'q');
+	*/
 
 	/**************************/					
 	/* Sample FreeRun grabber */
@@ -58,6 +60,22 @@ int main(int argc, char* argv[])
 	cam.StopLive();
 	*/
 
+	/*******************************/
+	/* Sample FreeRun OpenCV Video */
+	/*******************************/
+	VideoWriter video;
+	video.open("D:\\Test.avi", CV_FOURCC('F', 'M', 'P', '4'),25,cam.getCvSize(),cam.getIsColor());
+	//video.open("D:\\Test.avi", CV_FOURCC('H', 'E', 'V', 'C'), 25, cam.getCvSize(), false);
+
+	Mat img = cam.getMat();
+	do
+	{
+		cam.GrabFrame();
+		video << img;
+		imshow("Image", img);
+		
+	} while (waitKey(1) != 'q');
+	
 
 	return 0;
 }
