@@ -44,7 +44,6 @@
 #define DEF_COLOR MONO//BGR32
 #define DEF_SIZE getSize(0,0)
 #define DEF_NBUFFER 10
-#define DEF_FPS 25
 
 #if defined(WIN32)
     #define DLL_EXPORT __declspec( dllexport )
@@ -57,8 +56,8 @@ using namespace std;
 
 enum colorType{
 	MONO = IS_CM_MONO8,
-	RGB32 = IS_CM_RGBA8_PACKED,
-	BGR32 = IS_CM_BGRA8_PACKED
+	RGB32 = IS_CM_RGB8_PACKED,
+	BGR32 = IS_CM_BGR8_PACKED
 };
 
 struct size{
@@ -77,7 +76,8 @@ DLL_EXPORT inline  size getSize(int x, int y)
 }
 
 
-inline string getPath(string begin, int val, string ext){
+inline string getPath(string begin, int val, string ext)
+{
 	char digit[20];			sprintf(digit, "%06d", val);
 	string path = begin;	path += digit;					path += ext;
 	return path;
@@ -139,11 +139,11 @@ public:
 	void SaveCurrentBufferedImage(char*);
 	void SaveImage(char*);
 
-#if defined(WIN32)
+//#if defined(WIN32)
 	virtual void startAVISave(std::string path,double fps);
 	void pushFrame(char *);
 	virtual void stopAVISave();
-#endif
+//#endif
 
 	//Accesseurs
 	int getSizeX(){ return m_nSizeX; }
@@ -160,6 +160,7 @@ private:
 	Mat *iMat = nullptr;
 	void InitOpenCVuEye();
 	int cvChannel;
+	VideoWriter video;
 
 public:
 
@@ -192,12 +193,16 @@ public:
 	int getCvLastRingBuffer();
 
 	//Avi
+	/*
 #if defined(WIN32)
 	void pushFrame();
 #else
-	//void startAVISave(std::string path,double fps);
-	//void stopAVISave();
-#endif
+	*/
+	//OpenCV Video
+	void startAVISave(std::string path,double fps);
+	void pushFrame();
+	void stopAVISave();
+//#endif
 
 	bool isColor(){ return (ColorMode == colorType::RGB32) ? true : false; };
 

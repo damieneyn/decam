@@ -2,10 +2,6 @@
 
 void CVuEye::InitOpenCVuEye()
 {
-
-	int rColor;
-
-	(ColorMode == MONO) ? rColor = 1 : rColor = 4;
 	switch(ColorMode)
 	{
         default:
@@ -13,43 +9,42 @@ void CVuEye::InitOpenCVuEye()
             cvChannel = 1 ;
             break;
         case BGR32:
-            cvChannel = 4;
-            break;
         case RGB32:
             cvChannel = 3;
             break;
     }
 
-	//Init buffer opencv/uEye memory
-	iBuffer=cvCreateImage(getCvSize(m_nImg),8,cvChannel);
-	is_AllocImageMem(m_hCam,m_nImg.width,m_nImg.height,m_nBitsPerPixel,&m_cvImageMemory,&m_lMemoryId);
 
-	cout << "- Image descriptor ----------------"<<endl;
-	cout << "- Size : " << m_nImg.width << "x" << m_nImg.height<<endl;
-	cout << "- Color : " << rColor << endl;
-	cout << "- Channels : "<<cvChannel << endl;
-	cout << "- Bits per pixel :" <<m_nBitsPerPixel<<endl;
-	cout << "- End Image descriptor ------------"<<endl<<endl;
+	//Init buffer opencv/uEye memory
+	iBuffer = cvCreateImage(getCvSize(m_nImg), 8, cvChannel);
+	is_AllocImageMem(m_hCam, m_nImg.width, m_nImg.height, m_nBitsPerPixel, &m_cvImageMemory, &m_lMemoryId);
+
+	cout << "- Image descriptor ----------------" << endl;
+	cout << "- Size : " << m_nImg.width << "x" << m_nImg.height << endl;
+	cout << "- Channels : "<< cvChannel << endl;
+	cout << "- Bits per pixel :" << m_nBitsPerPixel << endl;
+	cout << "- End Image descriptor ------------"<< endl << endl;
 /*
 	//pointer to where the image is stored
 	iBuffer->nSize=112;
+*/
 	iBuffer->ID=0;
-	iBuffer->nChannels=rColor;
+	iBuffer->nChannels = cvChannel;
 	iBuffer->alphaChannel=0;
 	iBuffer->depth=8;
 	iBuffer->dataOrder=0;
 	iBuffer->origin=0;
-*/
+
 	//rColor?iBuffer->align=3:
-	iBuffer->align=1;
-	iBuffer->width=m_nImg.width;//sInfo.nMaxWidth;
-	iBuffer->height=m_nImg.height;//sInfo.nMaxHeight;
+	iBuffer->align = 1;
+	iBuffer->width = m_nImg.width;//sInfo.nMaxWidth;
+	iBuffer->height = m_nImg.height;//sInfo.nMaxHeight;
 	iBuffer->roi=NULL;
 	iBuffer->maskROI=NULL;
 	iBuffer->imageId=NULL;
 	iBuffer->tileInfo=NULL;
-	iBuffer->imageSize=rColor*m_nImg.width*m_nImg.height;//sInfo.nMaxWidth*sInfo.nMaxHeight;
-	iBuffer->widthStep=4*m_nImg.width;
+	iBuffer->imageSize = cvChannel*m_nImg.width*m_nImg.height; //sInfo.nMaxWidth*sInfo.nMaxHeight;
+	iBuffer->widthStep = 4 * m_nImg.width;
 
 	//On link les buffer
 	iBuffer->imageDataOrigin = (char*)m_cvImageMemory;
@@ -97,12 +92,33 @@ int CVuEye::getCvLastRingBuffer()
 {
 	return CuEye::getLastRingBuffer(m_cvImageMemory);
 }
+/*
 #if defined(WIN32)
+
 void CVuEye::pushFrame()
 {
 	CuEye::pushFrame(m_cvImageMemory);
 }
-#endif
+
+#else*/
+
+void CVuEye::startAVISave(std::string path, double fps)
+{
+	video.open(path, CV_FOURCC('F', 'M', 'P', '4'), fps, getCvSize(), getIsColor());
+}
+
+void CVuEye::pushFrame()
+{
+	video << getMat();
+}
+
+
+void CVuEye::stopAVISave()
+{
+	
+}
+
+//#endif
 
 Mat CVuEye::getMat()
 {

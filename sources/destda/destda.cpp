@@ -63,19 +63,24 @@ int main(int argc, char* argv[])
 	/*******************************/
 	/* Sample FreeRun OpenCV Video */
 	/*******************************/
-	VideoWriter video;
-	video.open("D:\\Test.avi", CV_FOURCC('F', 'M', 'P', '4'),25,cam.getCvSize(),cam.getIsColor());
-	//video.open("D:\\Test.avi", CV_FOURCC('H', 'E', 'V', 'C'), 25, cam.getCvSize(), false);
+	//VideoWriter video;
+	//video.open("D:\\Damien\\Acqui\\Test.avi", CV_FOURCC('F', 'M', 'P', '4'), 30, cam.getCvSize(), cam.getIsColor());
+	cam.startAVISave("D:\\Damien\\Acqui\\Test.avi", 30);
 
 	Mat img = cam.getMat();
 	do
 	{
-		cam.GrabFrame();
-		video << img;
+		cam.GrabFrame();  
+		//video << img;
+		cam.pushFrame();
 		imshow("Image", img);
 		
 	} while (waitKey(1) != 'q');
 	
+	VideoCapture readVideo;
+	readVideo.open("D:\\Damien\\Acqui\\Test.avi");
+	readVideo >> img;
+	imwrite("D:\\Damien\\Acqui\\readVideo.jpg", img);
 
 	return 0;
 }

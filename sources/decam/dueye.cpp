@@ -283,28 +283,29 @@ void CuEye::SaveImage(char *path)
 }
 
 
-#if defined(WIN32)
+//#if defined(WIN32)
 void CuEye::startAVISave(const std::string path,double fps)
 {
-
-	INT pnX,pnY,pnBits,pnPitch,nNum;
+	INT pnX, pnY, pnBits, pnPitch, nNum;
 	char *pcMem, *pcMemLast;
+
 	is_GetActSeqBuf(m_hCam, &nNum, &pcMem, &pcMemLast);
+
 	is_InquireImageMem (m_hCam, pcMemLast, m_lMemoryId, &pnX,&pnY, &pnBits, &pnPitch);
 
-	if(isavi_InitAVI(&pAviId,m_hCam))cout<<"erreur IniAVI"<<endl;
+	if (isavi_InitAVI(&pAviId, m_hCam))cout << "erreur IniAVI" << endl;
 
-	(ColorMode==colorType::MONO)?pnPitch=pnPitch*8/8-m_nSizeX:pnPitch=pnPitch*8/32-m_nSizeX;
+	pnPitch = ((ColorMode == colorType::MONO) ? pnPitch * 8 / 8 : pnPitch * 8 / 32) - m_nSizeX;
 
-	isavi_SetImageSize(pAviId,m_nColorMode,m_nSizeX,m_nSizeY,0,0,pnPitch);
+	isavi_SetImageSize(pAviId, m_nColorMode, m_nSizeX, m_nSizeY, 0, 0, pnPitch);
 
 	isavi_SetImageQuality(pAviId,75);
 
-	if(isavi_OpenAVI(pAviId,path.c_str()))cout<<"erreur OpenAVI"<<endl;
+	if (isavi_OpenAVI(pAviId, path.c_str())) cout << "erreur OpenAVI" << endl;
 
 	isavi_SetFrameRate(pAviId,fps);
 
-	if(isavi_StartAVI(pAviId))cout<<"erreur StartAVI"<<endl;
+	if(isavi_StartAVI(pAviId)) cout<<"erreur StartAVI"<<endl;
 
 	int nCurrentState = IO_LED_STATE_2;
 	//led to green
@@ -352,6 +353,6 @@ void CuEye::stopAVISave()
 	//led to orange
 	is_IO(m_hCam, IS_IO_CMD_LED_SET_STATE, (void*)&nCurrentState, sizeof(nCurrentState));
 }
-#endif
+//#endif
 
 /**************************************************************************************/
