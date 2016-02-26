@@ -143,10 +143,6 @@ public:
 	virtual void startAVISave(std::string path,double fps);
 	virtual void pushFrame(char *);
 	virtual void stopAVISave();
-#else
-	virtual void startAVISave(std::string path, double fps)=0;
-	virtual void pushFrame(char *) =0;
-	virtual void stopAVISave()=0;
 #endif
 
 	//Accesseurs
@@ -176,8 +172,8 @@ public:
 		   CuEye(AutoGain, AutoShutter, nBuffer, ColorMode, sI)
 		   { InitOpenCVuEye(); };
 
-	CVuEye(bool color, size sI = DEF_SIZE) :
-		CuEye(DEF_GAIN, DEF_SHUTTER, DEF_NBUFFER, color?BGR32:MONO, sI)
+	CVuEye(bool color) :
+		CuEye(DEF_GAIN, DEF_SHUTTER, DEF_NBUFFER, color?BGR32:MONO, DEF_SIZE)
 	{
 		InitOpenCVuEye();
 	};
@@ -197,16 +193,15 @@ public:
 	int getCvLastRingBuffer();
 
 	//Avi
-	/*
 #if defined(WIN32)
 	void pushFrame();
 #else
-	*/
+	
 	//OpenCV Video
 	void startAVISave(std::string path,double fps);
 	void pushFrame();
 	void stopAVISave();
-//#endif
+#endif
 
 	bool isColor(){ return (ColorMode == colorType::RGB32) ? true : false; };
 
