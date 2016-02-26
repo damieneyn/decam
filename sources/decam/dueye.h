@@ -139,11 +139,15 @@ public:
 	void SaveCurrentBufferedImage(char*);
 	void SaveImage(char*);
 
-//#if defined(WIN32)
+#if defined(WIN32)
 	virtual void startAVISave(std::string path,double fps);
-	void pushFrame(char *);
+	virtual void pushFrame(char *);
 	virtual void stopAVISave();
-//#endif
+#else
+	virtual void startAVISave(std::string path, double fps)=0;
+	virtual void pushFrame(char *) =0;
+	virtual void stopAVISave()=0;
+#endif
 
 	//Accesseurs
 	int getSizeX(){ return m_nSizeX; }

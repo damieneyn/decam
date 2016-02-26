@@ -283,7 +283,7 @@ void CuEye::SaveImage(char *path)
 }
 
 
-//#if defined(WIN32)
+#if defined(WIN32)
 void CuEye::startAVISave(const std::string path,double fps)
 {
 	INT pnX, pnY, pnBits, pnPitch, nNum;
@@ -353,6 +353,6 @@ void CuEye::stopAVISave()
 	//led to orange
 	is_IO(m_hCam, IS_IO_CMD_LED_SET_STATE, (void*)&nCurrentState, sizeof(nCurrentState));
 }
-//#endif
+#endif
 
 /**************************************************************************************/
